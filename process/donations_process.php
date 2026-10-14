@@ -1,0 +1,12 @@
+<?php
+require_once __DIR__ . '/../config/config.php'; require_once __DIR__ . '/../includes/functions.php';
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') redirect('pages/donations/list.php');
+try { $action = $_POST['action'] ?? '';
+    if ($action === 'create' || $action === 'update') { $name = trim((string) ($_POST['nama_donasi'] ?? '')); $amount = valid_nonnegative_int($_POST['harga_donasi'] ?? null); if ($name === '' || mb_strlen($name) > 50 || $amount === null) throw new InvalidArgumentException('Nama donasi wajib diisi dan nominal harus berupa bilangan bulat tidak negatif.');
+        if ($action === 'create') { $stmt = mysqli_prepare($conn, 'INSERT INTO tabel_donasi (nama_donasi, harga_donasi) VALUES (?, ?)'); mysqli_stmt_bind_param($stmt, 'si', $name, $amount); mysqli_stmt_execute($stmt); mysqli_stmt_close($stmt); set_flash('success', 'Donasi berhasil ditambahkan.'); }
+        else { $id = valid_positive_int($_POST['id_donasi'] ?? null); if ($id === null) throw new InvalidArgumentException('ID donasi tidak valid.'); $stmt = mysqli_prepare($conn, 'UPDATE tabel_donasi SET nama_donasi = ?, harga_donasi = ? WHERE id_donasi = ?'); mysqli_stmt_bind_param($stmt, 'sii', $name, $amount, $id); mysqli_stmt_execute($stmt); $changed = mysqli_stmt_affected_rows($stmt); mysqli_stmt_close($stmt); set_flash('success', $changed > 0 ? 'Donasi berhasil diperbarui.' : 'Tidak ada perubahan pada donasi.'); }
+    } elseif ($action === 'delete') { $id = valid_positive_int($_POST['id_donasi'] ?? null); if ($id === null) throw new InvalidArgumentException('ID donasi tidak valid.'); $stmt = mysqli_prepare($conn, 'DELETE FROM tabel_donasi WHERE id_donasi = ?'); mysqli_stmt_bind_param($stmt, 'i', $id); mysqli_stmt_execute($stmt); $changed = mysqli_stmt_affected_rows($stmt); mysqli_stmt_close($stmt); set_flash($changed > 0 ? 'success' : 'error', $changed > 0 ? 'Donasi berhasil dihapus.' : 'Donasi tidak ditemukan.'); }
+    else throw new InvalidArgumentException('Permintaan tidak dikenali.');
+} catch (InvalidArgumentException $exception) { set_flash('error', $exception->getMessage());
+} catch (mysqli_sql_exception $exception) { error_log('Proses donasi gagal: ' . $exception->getMessage()); set_flash('error', (int) $exception->getCode() === 1451 ? 'Donasi tidak dapat dihapus karena sudah dipakai pada transaksi.' : 'Data donasi tidak dapat disimpan saat ini.'); }
+redirect('pages/donations/list.php');
