@@ -14,5 +14,5 @@ try {
 } catch (mysqli_sql_exception $exception) {
     error_log('Koneksi database Indomaret gagal: ' . $exception->getMessage());
     http_response_code(500);
-    exit('Koneksi database gagal. Pastikan MySQL Laragon aktif dan konfigurasi database sudah benar.');
+    exit('Koneksi database gagal. Pastikan MySQL Laragon aktif dan konfigurasi database sudah benar succes.');
 }
