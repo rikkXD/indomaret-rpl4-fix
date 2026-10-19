@@ -28,10 +28,10 @@ require_once __DIR__ . '/../includes/header.php';
     <p class="alert alert-error" role="alert"><?= e($dashboardError) ?></p>
 <?php else: ?>
     <section class="summary-grid" aria-label="Ringkasan aplikasi">
-        <article><span>Produk</span><strong><?= $summary['products'] ?></strong></article>
-        <article><span>Kasir</span><strong><?= $summary['cashiers'] ?></strong></article>
-        <article><span>Transaksi</span><strong><?= $summary['transactions'] ?></strong></article>
-        <article><span>Total Penjualan</span><strong><?= e(format_rupiah($summary['revenue'])) ?></strong></article>
+        <article class="summary-card"><span class="summary-icon summary-icon-blue" aria-hidden="true">□</span><div><span>Produk</span><strong><?= $summary['products'] ?></strong><small>Produk terdaftar</small></div></article>
+        <article class="summary-card"><span class="summary-icon summary-icon-yellow" aria-hidden="true">◉</span><div><span>Kasir</span><strong><?= $summary['cashiers'] ?></strong><small>Kasir aktif</small></div></article>
+        <article class="summary-card"><span class="summary-icon summary-icon-red" aria-hidden="true">◷</span><div><span>Transaksi</span><strong><?= $summary['transactions'] ?></strong><small>Transaksi tercatat</small></div></article>
+        <article class="summary-card summary-card-wide"><span class="summary-icon summary-icon-blue" aria-hidden="true">Rp</span><div><span>Total Penjualan</span><strong><?= e(format_rupiah($summary['revenue'])) ?></strong><small>Akumulasi seluruh transaksi</small></div></article>
     </section>
 <?php endif; ?>
 
