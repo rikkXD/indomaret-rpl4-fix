@@ -53,7 +53,7 @@ require_once __DIR__ . '/../../includes/header.php';
                         <td>Rp<?= number_format($price, 0, ',', '.') ?></td>
                         <td>Rp<?= number_format($discount, 0, ',', '.') ?></td>
                         <td>Rp<?= number_format($finalPrice, 0, ',', '.') ?></td>
-                        <td><div class="actions"><a class="button button-secondary" href="<?= e(app_url('pages/products/edit.php?id=' . (int) $product['id_produk'])) ?>">Edit</a><form class="inline-form" method="post" action="<?= e(app_url('process/products_process.php')) ?>" onsubmit="return confirm('Hapus produk ini?');"><input type="hidden" name="action" value="delete"><input type="hidden" name="id_produk" value="<?= (int) $product['id_produk'] ?>"><button class="button button-danger" type="submit">Hapus</button></form></div></td>
+                        <td><div class="actions"><a class="button button-secondary" href="<?= e(app_url('pages/products/edit.php?id=' . (int) $product['id_produk'])) ?>">Edit</a><form class="inline-form" method="post" action="<?= e(app_url('process/products_process.php')) ?>" data-confirm="Produk ini akan dihapus bila belum digunakan pada transaksi."><input type="hidden" name="action" value="delete"><input type="hidden" name="id_produk" value="<?= (int) $product['id_produk'] ?>"><button class="button button-danger" type="submit">Hapus</button></form></div></td>
                     </tr>
                 <?php endwhile; ?>
             </tbody>
