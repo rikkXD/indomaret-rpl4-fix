@@ -21,6 +21,29 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('[data-dismiss-alert]').forEach((button) => {
         button.addEventListener('click', () => button.closest('.alert')?.remove());
     });
+
+    const productSelect = document.querySelector('[data-product-select]');
+    const quantityInput = document.querySelector('[data-quantity-input]');
+    const donationSelect = document.querySelector('[data-donation-select]');
+    if (productSelect && quantityInput && donationSelect) {
+        const formatCurrency = (value) => `Rp${new Intl.NumberFormat('id-ID').format(value)}`;
+        const updateTransactionSummary = () => {
+            const productOption = productSelect.options[productSelect.selectedIndex];
+            const donationOption = donationSelect.options[donationSelect.selectedIndex];
+            const quantity = Math.max(1, Number.parseInt(quantityInput.value, 10) || 1);
+            const price = Number(productOption?.dataset.price || 0);
+            const discount = Number(productOption?.dataset.discount || 0) * quantity;
+            const subtotal = price * quantity;
+            const donation = Number(donationOption?.dataset.donation || 0);
+            document.querySelector('[data-summary-subtotal]').textContent = formatCurrency(subtotal);
+            document.querySelector('[data-summary-discount]').textContent = `- ${formatCurrency(discount)}`;
+            document.querySelector('[data-summary-donation]').textContent = formatCurrency(donation);
+            document.querySelector('[data-summary-total]').textContent = formatCurrency(Math.max(0, subtotal - discount) + donation);
+        };
+        [productSelect, quantityInput, donationSelect].forEach((element) => element.addEventListener('input', updateTransactionSummary));
+        updateTransactionSummary();
+    }
+
     document.querySelectorAll('form[data-confirm]').forEach((form) => {
         form.addEventListener('submit', (event) => {
             if (form.dataset.confirmed === 'true') return;
